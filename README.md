@@ -1,1 +1,1 @@
-# ling-things
+Just playing around with some linguistically related ideas.
