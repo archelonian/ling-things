@@ -36,6 +36,11 @@ public class Syllabifier{
       String dummyPatterns[] = {"CV", "CVC"} ;
 
       // populate instance variables
+      words = new ArrayList<String>() ;
+      patterns = new ArrayList<String>() ;
+      partitions = new ArrayList<String>() ;
+      outputs = new HashMap<String, ArrayList<String>>() ;
+
       for(String word : dummyWords){
          words.add(word) ;
       }
@@ -68,11 +73,25 @@ public class Syllabifier{
       }
    } // end partition
 
+   // TODO: debug code, delete later
+   private void printList(ArrayList<String> list){
+      for(int i = 0; i < list.size(); i++){
+         System.out.println(list.get(i)) ;
+      }
+   }
+
    // checkSyll recursively checks if it is able to complete a valid syllable
    //    and move on. The goal here is to recurse on the base itself, then the
    //    base and one more character, then two, until no matching pattern can
    //    be found and that path is deemed impossible to further partition.
    private void checkSyll(String base, String rest, String acc){
+      // TODO: debug code, delete later
+      System.out.println("base: " + base + " rest: " + rest + " acc: " + acc) ;
+      // System.out.println("contents of partitions:") ;
+      // printList(partitions) ;
+
+      // TODO: recursion is not happening as expected
+
       // assume the word is partitionable to start with
       boolean possible = true ;
 
@@ -86,6 +105,8 @@ public class Syllabifier{
             if(patterns.contains(currUnit)){
                acc += base ;
 
+               // TODO: debug code, delete later
+               System.out.println("adding a value to partitions") ;
                partitions.add(acc) ;
             }
 
@@ -97,15 +118,17 @@ public class Syllabifier{
 
             if(patterns.contains(currUnit)){
                // got a permitted syllable, add it to the accumulator
-               acc += (base + "|") ;
+               acc += (currUnit + "|") ;
       
                // found syllable recorded, partition the rest
-               if(rest.length() > 1){
-                  checkSyll(rest.substring(0, 1), rest.substring(1), acc) ;
+               // actually, what we care about is the word minus the currUnit
+               if(rest.substring(prefixSize).length() > 1){
+                  checkSyll(rest.substring(prefixSize, (prefixSize + 1)),
+                            rest.substring(prefixSize), acc) ;
                }
                else {
                   // only one character, remaining is of length 0
-                  checkSyll(rest, "", "") ;
+                  checkSyll(rest.substring(prefixSize), "", acc) ;
                }
             }
             else {
@@ -126,6 +149,31 @@ public class Syllabifier{
    // perform program output: write to file
    private void output(){
       // TODO write out to file
+
+      ArrayList<String> currPartitions ;
+      String currWord ;
+
+      // iterate over the words in sequence
+      for(int i = 0; i < words.size(); i++){
+         // spacing
+         System.out.println() ;
+
+         currWord = words.get(i) ;
+
+         System.out.println("Printing partitions for " + currWord) ;
+         // get an array of all the partitions associated with this word
+         currPartitions = outputs.get(currWord) ;
+
+         if(currPartitions.size() == 0){
+            System.out.println("\tNo valid partitions found for word "
+                               + currWord) ;
+         }
+
+         // print values in sequence
+         for(int j = 0; j < currPartitions.size(); j++){
+            System.out.println("\t" + currPartitions.get(j)) ;
+         }
+      }
    } // end output
 
    // main methods, creates a Syllabifier object and runs its methods

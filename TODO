@@ -1,0 +1,16 @@
+immediate
+- fix recursive cases (related to refactor?)
+
+next
+- consider refactoring code to take "base" out entirely
+  - most of the recursion is dependent on the prefixSize, base actually hardly
+    comes into play
+  - actually, there's no need to pass a prefixSize in either, since the
+    algorithm just iteratively checks the first 1 up to n characters
+  - checkSyll(String word, String acc)
+- file I/O rather than hard-coded dummy lists
+
+future
+- take word input rather than just {C, V}*
+  - not actually sure if this will be useful to anyone though
+- adapt for web app
