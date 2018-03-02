@@ -57,6 +57,7 @@ public class Syllabifier{
       for(String word : words){
          // TODO: debug code, delete later
          System.out.println("in word: " + word) ;
+         printOutputs() ;
 
          // reset found partitions
          partitions.clear() ;
@@ -67,14 +68,14 @@ public class Syllabifier{
             checkSyll(word, "") ;
          }
          else {
-            // only one character, rest of word is of length 0
+            // only one character
             if(patterns.contains(word)){
                partitions.add(word) ;
             }
          }
 
          // TODO: debug code, delete later
-         System.out.println("adding this set of partitions to word " + word) ;
+         System.out.println("adding:") ;
          printList(partitions) ;
          // add all found partitions to output list
          outputs.put(word, partitions) ;
@@ -88,12 +89,27 @@ public class Syllabifier{
       }
    }
 
+   // TODO: debug code, delete later
+   private void printOutputs(){
+      System.out.println("printing hashmap outputs") ;
+      for(String word : words){
+         System.out.println("word: " + word) ;
+         if(outputs.get(word) == null){
+            System.out.println("null") ;
+         }
+         else{
+            printList(outputs.get(word)) ;
+         }
+      }
+   }
+
    // checkSyll recursively checks if it is able to complete a valid syllable
    //    and move on. The goal here is to recurse on the base itself, then the
    //    base and one more character, then two, until no matching pattern can
    //    be found and that path is deemed impossible to further partition.
    private void checkSyll(String word, String acc){
       String currUnit ;
+      String newAcc ;
 
       // from first character only to entire word
       for(int prefix = 1; prefix <= word.length(); prefix++){
@@ -112,9 +128,14 @@ public class Syllabifier{
                checkSyll(word.substring(prefix), acc) ;
             }
             else {
-               // if currUnit the entire word and it is valid, partition found
+               // if currUnit is the entire word and it is a valid syllable,
+               //    partition found
                partitions.add(acc) ;
             }
+         }
+         else {
+            // fails, so don't recurse and clear the accumulator
+            acc = "" ;
          }
       }
    } // end checkSyll
