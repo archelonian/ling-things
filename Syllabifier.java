@@ -55,19 +55,27 @@ public class Syllabifier{
    private void partition(){
       // inspect each word
       for(String word : words){
+         // TODO: debug code, delete later
+         System.out.println("in word: " + word) ;
+
          // reset found partitions
          partitions.clear() ;
 
          // get syllable splits, start by checking from the first character and
          //    the accumulator starts empty
          if(word.length() > 1){
-            checkSyll(word.substring(0, 1), word.substring(1), "") ;
+            checkSyll(word, "") ;
          }
          else {
             // only one character, rest of word is of length 0
-            checkSyll(word, "", "") ;
+            if(patterns.contains(word)){
+               partitions.add(word) ;
+            }
          }
 
+         // TODO: debug code, delete later
+         System.out.println("adding this set of partitions to word " + word) ;
+         printList(partitions) ;
          // add all found partitions to output list
          outputs.put(word, partitions) ;
       }
@@ -84,66 +92,31 @@ public class Syllabifier{
    //    and move on. The goal here is to recurse on the base itself, then the
    //    base and one more character, then two, until no matching pattern can
    //    be found and that path is deemed impossible to further partition.
-   private void checkSyll(String base, String rest, String acc){
-      // TODO: debug code, delete later
-      System.out.println("base: " + base + " rest: " + rest + " acc: " + acc) ;
-      // System.out.println("contents of partitions:") ;
-      // printList(partitions) ;
+   private void checkSyll(String word, String acc){
+      String currUnit ;
 
-      // TODO: recursion is not happening as expected
+      // from first character only to entire word
+      for(int prefix = 1; prefix <= word.length(); prefix++){
+         currUnit = word.substring(0, prefix) ;
 
-      // assume the word is partitionable to start with
-      boolean possible = true ;
+         if(patterns.contains(currUnit)){
+            // this is a valid syllable, add to acc
+            acc += currUnit ;
 
-      // how many characters in addition to the base to start with?
-      int prefixSize = 0 ;
-      String currUnit = base ;
+            // recurse as long as currUnit is not the entire word
+            if(prefix < word.length()){
+               // add a boundary because there will be more characters
+               acc += "|" ;
 
-      while(possible && prefixSize < rest.length()){
-         if(rest.length() == 0){
-            // only base remains, don't bother recursing, just check
-            if(patterns.contains(currUnit)){
-               acc += base ;
-
-               // TODO: debug code, delete later
-               System.out.println("adding a value to partitions") ;
-               partitions.add(acc) ;
-            }
-
-            return ;
-         }
-         else {
-            // current potential syllable to check for
-            currUnit = base + rest.substring(prefixSize) ;
-
-            if(patterns.contains(currUnit)){
-               // got a permitted syllable, add it to the accumulator
-               acc += (currUnit + "|") ;
-      
-               // found syllable recorded, partition the rest
-               // actually, what we care about is the word minus the currUnit
-               if(rest.substring(prefixSize).length() > 1){
-                  checkSyll(rest.substring(prefixSize, (prefixSize + 1)),
-                            rest.substring(prefixSize), acc) ;
-               }
-               else {
-                  // only one character, remaining is of length 0
-                  checkSyll(rest.substring(prefixSize), "", acc) ;
-               }
+               // recurse on the rest of the word
+               checkSyll(word.substring(prefix), acc) ;
             }
             else {
-               // no longer possible to continue partitioning from here
-               possible = false ;
+               // if currUnit the entire word and it is valid, partition found
+               partitions.add(acc) ;
             }
          }
-
-         // check on an additional character next time
-         prefixSize++ ;
       }
-
-      // final catch all
-      return ;
-
    } // end checkSyll
 
    // perform program output: write to file
