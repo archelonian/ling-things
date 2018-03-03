@@ -1,8 +1,10 @@
-immediate
-- file I/O rather than hard-coded dummy lists
+now
+- output write to file
+- check more edge cases
 
-next
+later
 - indicate at which point in the word the partitioning becomes impossible
+- improve data structure choices
 
 future
 - take word input rather than just {C, V}*

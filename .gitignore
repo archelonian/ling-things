@@ -1,3 +1,7 @@
+# Syllabifier test/input files
+wordFile
+syllFile
+
 # Compiled class file
 *.class
 
