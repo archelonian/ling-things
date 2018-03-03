@@ -38,7 +38,6 @@ public class Syllabifier{
       patterns = new ArrayList<String>() ;
       partitions = new HashMap<String, ArrayList<String>>() ;
 
-      // happily, the scanner does not read blank lines
       while(scanWords.hasNextLine()){
          newWord = scanWords.nextLine() ;
 
@@ -120,10 +119,8 @@ public class Syllabifier{
       } // end for loop
    } // end checkSyll
 
-   // perform program output: write to file
+   // perform program output: write to console, no need to write to a file
    private void output(){
-      // TODO write out to file
-
       ArrayList<String> currPartitions ;
       String currWord ;
 
