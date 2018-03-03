@@ -1,13 +1,10 @@
 immediate
-- only the most recent partition sticks for some reason
-- clear what was most recently added to acc on failure?
-  - intermediate variable
+- file I/O rather than hard-coded dummy lists
 
 next
-- file I/O rather than hard-coded dummy lists
+- indicate at which point in the word the partitioning becomes impossible
 
 future
 - take word input rather than just {C, V}*
   - not actually sure if this will be useful to anyone though
 - adapt for web app
-- indicate at which point in the word the partitioning becomes impossible

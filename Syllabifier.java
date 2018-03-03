@@ -29,7 +29,8 @@ public class Syllabifier{
       // TODO: read from file, do not permit empty strings
 
       // dummy values to test with
-      String[] dummyWords = {"CVC", "CVCCVCVC", "CVCVCCCVVC", "CVCV", "CVCVC"} ;
+      // String[] dummyWords = {"CVC", "CVCCVCVC", "CVCVCCCVVC", "CVCV", "CVCCV"} ;
+      String[] dummyWords = {"CVCCV"} ;
       String[] dummyPatterns = {"CV", "CVC"} ;
 
       // populate instance variables
@@ -101,28 +102,35 @@ public class Syllabifier{
    //    syllables in the word
    private void checkSyll(String original, String segment, String acc){
       String currUnit ;
-      String newAcc = acc ;
+      String newAcc = "" ;
 
       // from first character only to entire segment
       for(int prefix = 1; prefix <= segment.length(); prefix++){
          currUnit = segment.substring(0, prefix) ;
 
          // TODO: debug code, delete later
-         System.out.println("currUnit: " + currUnit) ;
+         System.out.println("looking for " + currUnit) ;
 
          if(patterns.contains(currUnit)){
             // this is a valid syllable, put into newAcc as a syllable found in
             //    this iteration only
-            newAcc += currUnit ;
+            newAcc = currUnit ;
+
+            // TODO: debug code, delete later
+            System.out.println("found " + currUnit) ;
 
             // recurse as long as currUnit is not the entire segment
             if(prefix < segment.length()){
                // add a boundary because there will be more characters
                newAcc += "|" ;
-               System.out.println("adding |") ;
+
+               // TODO: debug code, delete later
+               System.out.println("not end, adding " + currUnit + " and |") ;
 
                // recurse on the rest of the segment, combine top level
                //    accumulator with newly found syllable
+               // TODO: debug code, delete later
+               System.out.println("recursing on " + segment.substring(prefix)) ;
                checkSyll(original, segment.substring(prefix), acc + newAcc) ;
             }
             else {
@@ -133,6 +141,10 @@ public class Syllabifier{
                // TODO: debug code, delete later
                System.out.println("adding " + acc + currUnit) ;
             }
+         }
+         else {
+            // TODO: debug code, delete later
+            System.out.println("did not find " + currUnit) ;
          }
       }
    } // end checkSyll
