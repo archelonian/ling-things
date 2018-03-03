@@ -20,9 +20,6 @@ public class Syllabifier{
    //    using a hash map or stream instead of ArrayList
    private ArrayList<String> patterns ;
 
-   // accumulate partitions of current word
-   private ArrayList<String> partitions ;
-
    // the key is the word and the value is all found partitions for the word
    //    (e.g. "CV|CV") 
    private HashMap<String, ArrayList<String>> outputs ;
@@ -32,17 +29,19 @@ public class Syllabifier{
       // TODO: read from file, do not permit empty strings
 
       // dummy values to test with
-      String dummyWords[] = {"CVC", "CVCCVCVC", "CVCVCCCVVC", "CVCV", "CVCVC"} ;
-      String dummyPatterns[] = {"CV", "CVC"} ;
+      String[] dummyWords = {"CVC", "CVCCVCVC", "CVCVCCCVVC", "CVCV", "CVCVC"} ;
+      String[] dummyPatterns = {"CV", "CVC"} ;
 
       // populate instance variables
       words = new ArrayList<String>() ;
       patterns = new ArrayList<String>() ;
-      partitions = new ArrayList<String>() ;
       outputs = new HashMap<String, ArrayList<String>>() ;
 
       for(String word : dummyWords){
          words.add(word) ;
+
+         ArrayList<String> emptyList = new ArrayList<String>() ;
+         outputs.put(word, emptyList) ;
       }
 
       for(String pattern : dummyPatterns){
@@ -57,28 +56,18 @@ public class Syllabifier{
       for(String word : words){
          // TODO: debug code, delete later
          System.out.println("in word: " + word) ;
-         printOutputs() ;
-
-         // reset found partitions
-         partitions.clear() ;
 
          // get syllable splits, start by checking from the first character and
          //    the accumulator starts empty
          if(word.length() > 1){
-            checkSyll(word, "") ;
+            checkSyll(word, word, "") ;
          }
          else {
-            // only one character
+            // only one character, add to partitions
             if(patterns.contains(word)){
-               partitions.add(word) ;
+               outputs.get(word).add(word) ;
             }
          }
-
-         // TODO: debug code, delete later
-         System.out.println("adding:") ;
-         printList(partitions) ;
-         // add all found partitions to output list
-         outputs.put(word, partitions) ;
       }
    } // end partition
 
@@ -107,35 +96,43 @@ public class Syllabifier{
    //    and move on. The goal here is to recurse on the base itself, then the
    //    base and one more character, then two, until no matching pattern can
    //    be found and that path is deemed impossible to further partition.
-   private void checkSyll(String word, String acc){
+   //
+   // segment is the part to recurse over and acc is previously processed valid
+   //    syllables in the word
+   private void checkSyll(String original, String segment, String acc){
       String currUnit ;
-      String newAcc ;
+      String newAcc = acc ;
 
-      // from first character only to entire word
-      for(int prefix = 1; prefix <= word.length(); prefix++){
-         currUnit = word.substring(0, prefix) ;
+      // from first character only to entire segment
+      for(int prefix = 1; prefix <= segment.length(); prefix++){
+         currUnit = segment.substring(0, prefix) ;
+
+         // TODO: debug code, delete later
+         System.out.println("currUnit: " + currUnit) ;
 
          if(patterns.contains(currUnit)){
-            // this is a valid syllable, add to acc
-            acc += currUnit ;
+            // this is a valid syllable, put into newAcc as a syllable found in
+            //    this iteration only
+            newAcc += currUnit ;
 
-            // recurse as long as currUnit is not the entire word
-            if(prefix < word.length()){
+            // recurse as long as currUnit is not the entire segment
+            if(prefix < segment.length()){
                // add a boundary because there will be more characters
-               acc += "|" ;
+               newAcc += "|" ;
+               System.out.println("adding |") ;
 
-               // recurse on the rest of the word
-               checkSyll(word.substring(prefix), acc) ;
+               // recurse on the rest of the segment, combine top level
+               //    accumulator with newly found syllable
+               checkSyll(original, segment.substring(prefix), acc + newAcc) ;
             }
             else {
-               // if currUnit is the entire word and it is a valid syllable,
+               // if currUnit is the entire segment and it is a valid syllable,
                //    partition found
-               partitions.add(acc) ;
+               outputs.get(original).add(acc + currUnit) ;
+
+               // TODO: debug code, delete later
+               System.out.println("adding " + acc + currUnit) ;
             }
-         }
-         else {
-            // fails, so don't recurse and clear the accumulator
-            acc = "" ;
          }
       }
    } // end checkSyll
@@ -158,7 +155,7 @@ public class Syllabifier{
          // get an array of all the partitions associated with this word
          currPartitions = outputs.get(currWord) ;
 
-         if(currPartitions.size() == 0){
+         if(currPartitions.isEmpty()){
             System.out.println("\tNo valid partitions found for word "
                                + currWord) ;
          }
