@@ -12,6 +12,7 @@ import java.io.* ;
 
 public class Syllabifier{
    public static final int EXPECTED_ARGS = 2 ;
+   public static final String BOUNDARY = "|" ;
 
    // words to partition
    private ArrayList<String> words ;
@@ -104,7 +105,7 @@ public class Syllabifier{
             // recurse as long as currUnit is not the entire segment
             if(prefix < segment.length()){
                // add a boundary because there will be more characters
-               newAcc += "|" ;
+               newAcc += BOUNDARY ;
 
                // recurse on the rest of the segment, combine top level
                //    accumulator with newly found syllable

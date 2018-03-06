@@ -1,11 +1,16 @@
 now
 - check more edge cases
+  - duplicate syllables cause duplicate partitions
+- weighting (favorability per se)
 
 later
 - indicate at which point in the word the partitioning becomes impossible
+- directional (from front, from back) preference
+  - preference specifically, since ordering is no matter because the recursive
+    nature of the program gets all of them anyway
 - improve data structure choices
 
 future
 - take word input rather than just {C, V}*
-  - not actually sure if this will be useful to anyone though
+  - variability based on types of sounds precisely (ex. english "mister")
 - adapt for web app
