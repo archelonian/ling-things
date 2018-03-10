@@ -8,6 +8,8 @@ later
 - directional (from front, from back) preference
   - preference specifically, since ordering is no matter because the recursive
     nature of the program gets all of them anyway
+- generic string partitioner, separate syllabifier that has-a (or is-a?)
+  partitioner but uses that partitioner specifically for syllable-related work
 - improve data structure choices
 
 future
